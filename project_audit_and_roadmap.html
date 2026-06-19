@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Технічний аудит та дорожня карта розвитку проєкту "AI Text Analyzer"</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true, 
+            theme: 'default',
+            securityLevel: 'loose',
+            flowchart: { useMaxWidth: true, htmlLabels: true }
+        });
+    </script>
+    
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-light: #818CF8;
+            --secondary: #0F172A;
+            --bg-page: #F8FAFC;
+            --bg-card: #FFFFFF;
+            --text-main: #334155;
+            --text-dark: #0F172A;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+            
+            --note-color: #3B82F6;
+            --tip-color: #10B981;
+            --warn-color: #F59E0B;
+            --danger-color: #EF4444;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .wrapper {
+            max-width: 960px;
+            margin: 3rem auto;
+            padding: 3rem;
+            background: var(--bg-card);
+            border-radius: 24px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+        }
+
+        /* Typography */
+        h1, h2, h3, h4 {
+            font-family: 'Outfit', sans-serif;
+            color: var(--text-dark);
+            font-weight: 700;
+            margin-top: 2.2rem;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            text-align: center;
+            background: linear-gradient(135deg, #4F46E5 0%, #818CF8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-top: 0;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 0.5rem;
+            margin-top: 3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1.35rem;
+            color: #4F46E5;
+        }
+
+        h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            margin-top: 0;
+            margin-bottom: 1.25rem;
+        }
+
+        a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 1px dashed var(--primary-light);
+            transition: all 0.2s ease;
+        }
+
+        a:hover {
+            color: #3730A3;
+            border-bottom-style: solid;
+        }
+
+        /* Lists */
+        ul {
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            box-shadow: var(--shadow);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        th, td {
+            padding: 1rem 1.25rem;
+            text-align: left;
+        }
+
+        th {
+            background-color: #F1F5F9;
+            color: var(--text-dark);
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 2px solid var(--border);
+        }
+
+        td {
+            border-bottom: 1px solid var(--border);
+            font-size: 0.95rem;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:nth-child(even) {
+            background-color: #F8FAFC;
+        }
+
+        /* Code and Pre */
+        pre {
+            background-color: #0F172A;
+            color: #E2E8F0;
+            padding: 1.5rem;
+            border-radius: 16px;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            margin: 1.5rem 0;
+            border: 1px solid #1E293B;
+            box-shadow: var(--shadow);
+        }
+
+        code {
+            font-family: 'Fira Code', monospace;
+            background-color: #F1F5F9;
+            color: #EF4444;
+            padding: 0.15rem 0.4rem;
+            border-radius: 6px;
+            font-size: 0.88em;
+        }
+
+        pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+            font-size: inherit;
+        }
+
+        /* Alerts & Blockquotes */
+        .alert {
+            padding: 1.25rem 1.5rem;
+            border-left: 6px solid;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            background-color: #F8FAFC;
+            box-shadow: var(--shadow);
+        }
+
+        .alert p {
+            margin: 0;
+        }
+
+        .alert-note {
+            border-left-color: var(--note-color);
+            background-color: #EFF6FF;
+            color: #1E40AF;
+        }
+
+        .alert-tip {
+            border-left-color: var(--tip-color);
+            background-color: #ECFDF5;
+            color: #065F46;
+        }
+
+        .alert-important {
+            border-left-color: var(--primary);
+            background-color: #EEF2F6;
+            color: var(--text-dark);
+        }
+
+        .alert-warning {
+            border-left-color: var(--warn-color);
+            background-color: #FFFBEB;
+            color: #92400E;
+        }
+
+        .alert-caution {
+            border-left-color: var(--danger-color);
+            background-color: #FEF2F2;
+            color: #991B1B;
+        }
+
+        blockquote {
+            margin: 1.5rem 0;
+            padding: 0.75rem 1.5rem;
+            border-left: 4px solid var(--border);
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* Mermaid */
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            background: #FAFAFA;
+            padding: 1.5rem;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            margin: 2rem 0;
+            overflow-x: auto;
+        }
+
+        /* Print and Utilities */
+        .print-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem 1.5rem;
+            border-radius: 50px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4);
+            transition: all 0.2s ease;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .print-btn:hover {
+            background: #3730A3;
+            transform: translateY(-2px);
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 3rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .wrapper {
+                margin: 0;
+                padding: 1.5rem;
+                border-radius: 0;
+                border: none;
+                box-shadow: none;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            h2 {
+                font-size: 1.4rem;
+            }
+        }
+
+        @media print {
+            body {
+                background-color: white;
+            }
+            .wrapper {
+                box-shadow: none;
+                border: none;
+                padding: 0;
+                margin: 0;
+                max-width: 100%;
+            }
+            .print-btn {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="auth-screen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: var(--bg-page); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'Outfit', sans-serif;">
+        <div style="background: var(--bg-card); padding: 2.5rem; border-radius: 24px; box-shadow: var(--shadow-lg); text-align: center; border: 1px solid var(--border); width: 100%; max-width: 340px;">
+            <h2 style="margin-top: 0; margin-bottom: 0.5rem; color: var(--text-dark); justify-content: center; border: none;">Доступ до проєкту</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">AI Text Analyzer Dashboard</p>
+            
+            <input type="text" id="username" placeholder="Логін" style="display: block; margin: 0 auto 15px; padding: 12px 16px; width: 100%; box-sizing: border-box; border: 1px solid var(--border); border-radius: 12px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem; outline: none; transition: border-color 0.2s;">
+            <input type="password" id="password" placeholder="Пароль" style="display: block; margin: 0 auto 15px; padding: 12px 16px; width: 100%; box-sizing: border-box; border: 1px solid var(--border); border-radius: 12px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem; outline: none; transition: border-color 0.2s;">
+            
+            <button onclick="checkLogin()" style="background: var(--primary); color: white; border: none; padding: 12px; border-radius: 12px; cursor: pointer; width: 100%; font-weight: 600; font-size: 1rem; font-family: 'Outfit', sans-serif; transition: background 0.2s, transform 0.1s; margin-top: 10px;">Увійти</button>
+            <p id="error-msg" style="color: var(--danger-color); display: none; margin-top: 15px; font-size: 0.9rem; font-weight: 500; margin-bottom: 0;">Невірний логін або пароль!</p>
+        </div>
+    </div>
+
+    <script>
+        // Блокуємо прокрутку
+        document.body.style.overflow = 'hidden';
+
+        function checkLogin() {
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+
+            if (user === 'admin' && pass === 'admin') {
+                // Плавне зникнення
+                const authScreen = document.getElementById('auth-screen');
+                authScreen.style.opacity = '0';
+                authScreen.style.transition = 'opacity 0.3s ease';
+                setTimeout(() => {
+                    authScreen.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }, 300);
+            } else {
+                document.getElementById('error-msg').style.display = 'block';
+            }
+        }
+
+        // Обробка клавіші Enter
+        document.getElementById('password').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') checkLogin();
+        });
+        document.getElementById('username').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') checkLogin();
+        });
+    </script>
+
+    <div class="wrapper">
+        <h1>Технічний аудит, оптимізація та дорожня карта розвитку проєкту "AI Text Analyzer"</h1>
+<p>Цей документ містить максимально детальний аналіз архітектури, кодової бази та інтерфейсу проєкту <strong>AI Text Analyzer</strong>. Тут об'єднано результати первинного аудиту, огляд ШІ/не-ШІ функцій, опис критичних «вузьких місць», детальний опис кожної ідеї для виробничої практики та дипломної роботи (зокрема, фічі порівняння з методичкою), а також рекомендації щодо оптимізації та захисту роботи.</p>
+<hr/>
+<h2>1. Повний аудит проєкту</h2>
+<h3>📊 Архітектура та структура проєкту</h3>
+<p>Проєкт побудовано за архітектурним патерном розділення клієнта та сервера (Client-Server Split):</p>
+<ul>
+<li>  <strong>Backend</strong>: реалізовано на вебфреймворку FastAPI (Python). Код структурований: маршрути описуються в роутері (<a href="file:///c:/Users/roman/Desktop/kursova/Text_Analizer1/backend/app/api/routes.py" target="_blank">routes.py</a>), схеми даних та валідація — через Pydantic-моделі (<a href="file:///c:/Users/roman/Desktop/kursova/Text_Analizer1/backend/app/schemas/text.py" target="_blank">text.py</a>), а бізнес-логіка винесена у сервіси (папка <a href="file:///c:/Users/roman/Desktop/kursova/Text_Analizer1/backend/app/services" target="_blank">services</a>). Це полегшує тестування та написання модульних тестів.</li>
+<li>  <strong>Frontend</strong>: SPA-додаток на базі React 19 та інструменту збірки Vite. Для стилізації застосовується TailwindCSS v3. Логіка взаємодії з API, обробка завантаження файлів, підсвічування помилок та збереження історії реалізовані у кастомному React-гачку (<a href="file:///c:/Users/roman/Desktop/kursova/Text_Analizer1/frontend/src/hooks/useTextAnalyzer.js" target="_blank">useTextAnalyzer.js</a>).</li>
+</ul>
+<h3>🛠 Кодова база та технології</h3>
+<ul>
+<li>  <strong>Сильні сторони</strong>:</li>
+<li>  Асинхронні обробники FastAPI дозволяють системі не блокувати потоки під час очікування відповідей від ШІ-провайдерів (I/O-bound операції).</li>
+<li>  Перевірка орфографії виконується за допомогою LanguageTool (<code>language_tool_python</code>) на локальному сервері. Це забезпечує високу точність перевірки для української мови, повну конфіденційність даних і є абсолютно безкоштовним.</li>
+<li>  Реалізація режиму <code>USE_MOCK_AI</code> дозволяє розробнику тестувати інтерфейс і бекенд без наявності інтернету та витрачання токенів Gemini API.</li>
+<li>  Фронтенд організовано за допомогою React Context (<code>AuthContext</code>, <code>ThemeContext</code>, <code>ToastContext</code>), що забезпечує глобальне керування темами, тостами та сесіями.</li>
+<li>  <strong>Слабкі сторони</strong>:</li>
+<li>  Немає інтегрованої бази даних. Облікові записи та історія збережених документів записуються безпосередньо у <code>localStorage</code> браузера. При очищенні кешу користувач втрачає всі дані.</li>
+<li>  Файли обробляються синхронно. У разі завантаження великих файлів (наприклад, 20-50 сторінок DOCX) один HTTP-запит триває тривалий час, що призводить до таймаутів з'єднання.</li>
+</ul>
+<h3>🎨 UI/UX та дизайн</h3>
+<ul>
+<li>  <strong>Сильні сторони</strong>: Сучасний преміальний інтерфейс із темною/світлою темами, можливістю вибору акцентних кольорів. Responsive layout (адаптивний дизайн) із прихованою бічною панеллю для мобільних пристроїв.</li>
+<li>  <strong>Слабкі сторони</strong>:</li>
+<li>  Попередній перегляд документів (<a href="file:///c:/Users/roman/Desktop/kursova/Text_Analizer1/frontend/src/components/editor/DocumentViewer.jsx" target="_blank">DocumentViewer.jsx</a>) є повністю статичним (read-only). Для внесення будь-яких правок користувачу доводиться переходити в режим звичайного тексту, де зникає вся розмітка документа.</li>
+<li>  Метод підсвічування помилок у текстовому полі реалізовано шляхом накладання прозорої <code>textarea</code> поверх абсолютного блоку <code>div</code> з підсвіченим текстом. Цей метод може викликати візуальні баги та зсуви (desync) при масштабуванні сторінки, швидкому прокручуванні або використанні специфічних шрифтів.</li>
+</ul>
+<h3>🔄 Поточний розподіл функцій (ШІ vs Локальні алгоритми)</h3>
+<div class="mermaid">graph TD
+    User[Користувач] -->|Запит| BE[FastAPI Backend]
+    BE -->|Орфографія & Граматика| LT[LanguageTool - Локально без ШІ]
+    BE -->|Читання файлів DOCX/PDF| PyDoc[python-docx / pypdf - Локально]
+    BE -->|Генерація PDF/Word| FPDF[fpdf / docx - Локально]
+    BE -->|Стиль, Тоніка, Опис, Переклад, Резюме| Gemini[Gemini API - ШІ]</div>
+<h4>🧠 Що виконується через ШІ (Gemini / Mock AI):</h4>
+<ul>
+<li>  <strong>Стилістичне покращення</strong> (<code>improve_style</code>) — переписування речень для надання їм наукового чи офіційного стилю.</li>
+<li>  <strong>Лінгвістичний аналіз</strong> (<code>analyze_text</code>) — класифікація стилю тексту, визначення емоційної тональності та автоматична оцінка складності за шкалою CEFR (A1-C2).</li>
+<li>  <strong>Генерація назви</strong> (<code>generate_title</code>) — створення короткого заголовка на основі змісту.</li>
+<li>  <strong>Короткий опис</strong> (<code>describe_text</code>) — резюмування вхідного документа у 2-3 реченнях.</li>
+<li>  <strong>Виділення ключових слів</strong> (<code>get_keywords</code>) — формування хмари тегів (5-10 ключових понять).</li>
+<li>  <strong>Переклад</strong> (<code>translate</code>) — інтелектуальний переклад з одночасним виправленням друкарських помилок мови оригіналу.</li>
+<li>  <strong>Зміна обсягу</strong> (<code>summarize</code> / <code>expand</code>) — скорочення або розширення тексту на певний відсоток.</li>
+<li>  <strong>Парафраз</strong> (<code>rewrite</code>) — переписування тексту іншими словами.</li>
+</ul>
+<h4>💻 Що виконується локально (Без ШІ):</h4>
+<ul>
+<li>  <strong>Аналіз орфографії та пунктуації</strong> (<code>spell_service</code>) — пошук помилок за допомогою класичних мовних правил у LanguageTool.</li>
+<li>  <strong>Зчитування тексту</strong> (<code>file_reader_service</code>) — отримання plain-text з документів Word та PDF.</li>
+<li>  <strong>Рендеринг звітів</strong> (<code>report_service</code>) — створення файлів для скачування користувачем.</li>
+</ul>
+<hr/>
+<h2>2. Критичні проблеми та «вузькі місця» (Bottlenecks)</h2>
+<div class="alert alert-warning">
+<p>Ці архітектурні та програмні баги необхідно виправити найближчим часом.</p></div>
+<h3>1. ❌ Смертельна помилка кирилиці в PDF (<a href="file:///c:/Users/roman/Desktop/kursova/Text_Analizer1/backend/app/services/report_service.py#L14-28" target="_blank">report_service.py:L14-28</a>)</h3>
+<p>Для формування PDF-звіту використовується такий код:</p>
+<pre><code class="language-python">safe_text = text.encode('latin-1', 'replace').decode('latin-1')</code></pre>
+<ul>
+<li>  <strong>Проблема</strong>: Бібліотека <code>fpdf</code> за замовчуванням підтримує лише шрифти типу Helvetica, Times, Courier, які закодовані у <code>latin-1</code> (ISO-8859-1). Українська кирилиця не входить у це кодування. Метод <code>encode('latin-1', 'replace')</code> замінює кожен український символ на знак питання. У результаті згенерований звіт містить лише знаки питання (<code>?????</code>).</li>
+<li>  <strong>Рішення</strong>: Перейти на сучасну бібліотеку <code>fpdf2</code> (вона підтримує TrueType шрифти та кодування UTF-8) і підключити зовнішній безкоштовний шрифт із кирилицею:</li>
+<pre><code class="language-python">    from fpdf import FPDF
+    pdf = FPDF()
+    pdf.add_font("Roboto", "", "fonts/Roboto-Regular.ttf")
+    pdf.set_font("Roboto", size=12)</code></pre>
+</ul>
+<h3>2. ❌ Залежність від встановленої Java на хості (<a href="file:///c:/Users/roman/Desktop/kursova/Text_Analizer1/backend/app/services/spellcheck_service.py#L9" target="_blank">spellcheck_service.py:L9</a>)</h3>
+<p>Клас <code>language_tool_python.LanguageTool('uk-UA')</code> автоматично завантажує Java-архів LanguageTool та запускає його у фоновому процесі на комп'ютері.</p>
+<ul>
+<li>  <strong>Проблема</strong>: Якщо на комп'ютері користувача або на сервері розгортання немає встановленого Java Runtime Environment (JRE), бекенд вилетить із критичною помилкою. Також локальний Java-сервер споживає велику кількість ОЗП (500 МБ+), що збільшує вимоги до хостингу.</li>
+<li>  <strong>Рішення</strong>: Для локальної розробки встановити JRE та додати перевірку наявності Java при старті сервера. Для продакшн-середовища налаштувати Docker-контейнер із базовим образом, що містить OpenJDK, або перемкнутися на використання хмарного інстансу LanguageTool через HTTP API.</li>
+</ul>
+<h3>3. ❌ Mock-авторизація та вразливість даних (<a href="file:///c:/Users/roman/Desktop/kursova/Text_Analizer1/frontend/src/context/AuthContext.jsx#L40-94" target="_blank">AuthContext.jsx:L40-94</a>)</h3>
+<p>Авторизація та реєстрація користувачів імітуються на фронтенді. Список зареєстрованих акаунтів лежить у незашифрованому вигляді в <code>localStorage</code>.</p>
+<ul>
+<li>  <strong>Проблема</strong>: Будь-яка вразливість (наприклад, XSS) дозволяє зловмисникам зчитати весь список паролів користувачів. Окрім того, користувач не може зайти у свій кабінет з іншого пристрою.</li>
+<li>  <strong>Рішення</strong>: Створити повноцінний API авторизації на FastAPI з використанням бібліотек <code>passlib</code> (для безпечного хешування паролів алгоритмом <code>bcrypt</code>) та <code>PyJWT</code> (для випуску токенів доступу). Токени слід зберігати в безпечних <code>HttpOnly</code> куках.</li>
+</ul>
+<h3>4. ❌ Засмічення файлової системи тимчасовими звітами (<a href="file:///c:/Users/roman/Desktop/kursova/Text_Analizer1/backend/app/api/routes.py#L211-242" target="_blank">routes.py:L211-242</a>)</h3>
+<p>Для видалення згенерованих PDF/Word звітів використовується FastAPI <code>BackgroundTasks</code>, який видаляє файл після його завантаження клієнтом.</p>
+<ul>
+<li>  <strong>Проблема</strong>: Якщо клієнт перерве з'єднання під час завантаження або бекенд раптово перезавантажиться під час виконання завдання, файл назавжди залишиться у папці <code>temp_reports</code>. З часом це призведе до повного заповнення дискового простору.</li>
+<li>  <strong>Рішення</strong>: Використовувати вбудовану бібліотеку Python <code>tempfile</code> для роботи з тимчасовими файлами або налаштувати фоновий планувальник (наприклад, <code>APScheduler</code>), який раз на годину видаляє всі файли в <code>temp_reports</code>, створені більше години тому.</li>
+</ul>
+<hr/>
+<h2>3. Рекомендації для Виробничої Практики</h2>
+<p>Основна мета практики — оптимізація витрат на API, стабільність системи та впровадження хмарних інтеграцій.</p>
+<h3>1. Заміна перекладу Gemini на Meta NLLB або спеціалізовані API</h3>
+<ul>
+<li>  <strong>Аналіз NLLB</strong>: Meta NLLB-200 — це професійна модель машинного перекладу. Проте її локальний запуск (навіть версії 600M параметрів) вимагає PyTorch та значних ресурсів CPU/GPU.</li>
+<li>  <strong>Альтернативне рішення</strong>: Якщо локальний запуск гальмує систему, краще замінити переклад на безкоштовний тарифний план <strong>DeepL API</strong> (до 500 000 символів на місяць безкоштовно) або підключитися до публічного інстансу <strong>LibreTranslate</strong>. Також можна використати бібліотеку <code>deep-translator</code>, яка працює через безкоштовні ліміти Google Translate.</li>
+<li>  <strong>Складність</strong>: <strong>Середня</strong> (Transformers) або <strong>Легка</strong> (REST API).</li>
+</ul>
+<h3>2. Перехід на OpenRouter з підтримкою Fallback та Routing</h3>
+<ul>
+<li>  <strong>OpenRouter</strong>: Перехід з бібліотеки <code>google-generativeai</code> на офіційний клієнт <code>openai</code>, оскільки OpenRouter повністю сумісний з OpenAI API. Це дозволить підключати десятки моделей від різних розробників (Meta, Anthropic, OpenAI, DeepSeek).</li>
+<li>  <strong>Fallback-система</strong>: Якщо модель (наприклад, <code>meta-llama/llama-3-8b-instruct</code>) повертає помилку 429 (Rate Limit) або 503 (сервіс недоступний), система автоматично надсилає повторний запит на резервну модель (наприклад, <code>google/gemini-flash-1.5</code>).</li>
+<li>  <strong>Routing (Маршрутизація)</strong>: Створення словника конфігурацій на бекенді, який визначає, яка модель виконує кожну дію. Наприклад:</li>
+<li>  <em>Швидка перевірка/Fast check</em> — <code>meta-llama/llama-3-8b-instruct</code>.</li>
+<li>  <em>Стилістичний аналіз та покращення</em> — <code>google/gemini-pro</code>.</li>
+<li>  <em>Резюмування/Ключові слова</em> — <code>openai/gpt-4o-mini</code>.</li>
+<li>  <strong>Складність</strong>: <strong>Середня</strong>.</li>
+</ul>
+<h3>3. Кешування ШІ-відповідями (AICache DB)</h3>
+<div class="alert alert-tip">
+<p><strong>Концепція</strong>: Збереження результатів ШІ-запитів у локальній базі даних. Якщо користувач повторно надсилає той самий текст для тієї ж дії (наприклад, переклад того самого речення), система не викликає ШІ, а миттєво віддає відповідь із бази. Це скорочує затримку до 0 мс та зберігає ліміти API.</p></div>
+<ul>
+<li>  <strong>Реалізація</strong>:</li>
+<li>Створити таблицю <code>ai_cache</code> (поля: <code>hash_id</code> (SHA-256 від вхідного тексту + параметри + дія), <code>input_text</code>, <code>action</code>, <code>response_data</code>, <code>created_at</code>).</li>
+<li>Перед викликом ШІ перевірити наявність <code>hash_id</code> в базі. Якщо є — повернути результат. Якщо немає — зробити запит, записати в базу та повернути клієнту.</li>
+<li>  <strong>Складність</strong>: <strong>Легка/Середня</strong>.</li>
+</ul>
+<h3>4. Візуалізація лімітів та Гостьовий доступ (UI/UX)</h3>
+<ul>
+<li>  <strong>Гостьовий режим</strong>: Неавторизованим користувачам доступні лише базові локальні інструменти: <em>Швидка орфографія (LanguageTool)</em> та <em>Перегляд завантажених файлів</em>. ШІ-інструменти (переклад, резюмування, стиль) заблоковані. При спробі їх виклику з'являється преміум-модалка з пропозицією увійти чи зареєструватися.</li>
+<li>  <strong>Індикатор лімітів</strong>: На фронтенді виводиться прогрес-бар (наприклад, «Використано ШІ-запитів: 8 із 20 на добу»). Бекенд рахує кількість записів користувача в таблиці логів запитів за останні 24 години та повертає це значення.</li>
+<li>  <strong>Складність</strong>: <strong>Середня</strong>.</li>
+</ul>
+<hr/>
+<h2>5. Рекомендації для Дипломної Роботи</h2>
+<p>Для дипломного проєкту потрібно реалізувати складніші інженерні завдання, що мають наукову новизну та високу практичну цінність.</p>
+<h3>1. Головна фіча: Перевірка та коригування документів за вимогами («Методичкою»)</h3>
+<div class="alert alert-important">
+<p><strong>Суть фічі</strong>: Користувач завантажує свою роботу (звіт, курсову) та документ із вимогами (методичку кафедри). Система аналізує роботу на відповідність правилам методички (наявність розділів, відповідність стилю написання, ключові фрази) та пропонує виправлений варіант.</p></div>
+<div class="mermaid">sequenceDiagram
+    actor User as Користувач
+    participant FE as React Frontend (TipTap Editor)
+    participant BE as FastAPI Backend
+    participant LLM as OpenRouter LLM
+    
+    User->>FE: Завантажує Документ + Методичку
+    FE->>BE: POST /analyze/compliance (Файли)
+    Note over BE: FileReaderService вилучає текст з обох файлів
+    BE->>LLM: 1. Екстракція правил з методички (System Prompt)
+    LLM-->>BE: Повертає структурований список правил (JSON Checklist)
+    BE->>LLM: 2. Перевірка документа за списком правил
+    LLM-->>BE: Повертає список невідповідностей (JSON Report)
+    BE-->>FE: Звіт про невідповідності та виправлений текст
+    FE->>User: Візуалізація: оригінал (з підсвіченими помилками методички) + пропозиція авто-виправлення</div>
+<h4>🛠 Технічні кроки реалізації:</h4>
+<ul>
+<li><strong>Парсинг правил методички</strong>: ШІ аналізує завантажений файл методички та формує з нього структурований JSON чек-ліст правил (наприклад, вимоги до структури: Вступ, Теоретична частина, Практична частина, Висновки; вимоги до стилю: науковий, без зайвих займенників типу "я вважаю").</li>
+<li><strong>Покроковий аналіз документа</strong>: Текст користувача зіставляється з чек-лістом правил.</li>
+<li><strong>UI-візуалізація невідповідностей</strong>: У бічній панелі виводиться список вимог та статус їх виконання (зелена галочка / червоний хрестик). Наприклад:</li>
+<li>  <code>[ ]</code> Опис об'єкта та предмета дослідження у вступі ➡️ <em>Не знайдено</em> (ШІ підсвічує місце у тексті, де це має бути).</li>
+<li>  <code>[x]</code> Наявність практичного розділу ➡️ <em>Виконано</em>.</li>
+<li>  <code>[ ]</code> Науковий стиль ➡️ <em>Знайдено розмовний зворот: "програма працює супер-швидко"</em> (ШІ пропонує замінити на <em>"система демонструє високу швидкодію"</em>).</li>
+<li><strong>Авто-виправлення</strong>: За запитом користувача система автоматично замінює невідповідні фрагменти на правильні прямо в редакторі.</li>
+<li>  <strong>Складність</strong>: <strong>Дуже висока</strong> (Основна фіча).</li>
+</ul>
+<h3>2. Повноцінний Rich-Text редактор у стилі Microsoft Word</h3>
+<ul>
+<li>  <strong>Аналіз</strong>: Заміна стандартної <code>textarea</code> на сучасний редактор.</li>
+<li>  <strong>Технологія</strong>: <strong>TipTap</strong> (React wrapper для ProseMirror). Він є дуже гнучким, підтримує TailwindCSS і дозволяє реалізувати форматування (шрифти, жирний, курсив, списки, посилання).</li>
+<li>  <strong>Інтеграція з LanguageTool</strong>: Для підсвічування орфографічних помилок доведеться створити кастомний плагін (ProseMirror Extension), який парсить HTML-структуру редактора, знаходить зсуви слів і виділяє помилки тегом <code>&lt;span class="border-b-2 border-red-500"&gt;</code> без порушення фокусу введення тексту.</li>
+<li>  <strong>Складність</strong>: <strong>Висока</strong>.</li>
+</ul>
+<h3>3. Редагування завантажених файлів (DOCX, PDF)</h3>
+<ul>
+<li>  <strong>Конвертація DOCX</strong>:</li>
+<li><em>Завантаження</em>: Користувач завантажує DOCX ➡️ бекенд за допомогою <code>mammoth</code> конвертує документ в чистий HTML ➡️ HTML завантажується в редактор TipTap.</li>
+<li><em>Редагування</em>: Користувач редагує текст, стилі, списки.</li>
+<li><em>Збереження</em>: HTML-вміст надсилається на бекенд ➡️ бекенд генерує повноцінний файл DOCX із збереженням нового форматування за допомогою бібліотек генерації DOCX (наприклад, <code>python-docx</code> або шляхом конвертації через утиліту <code>pandoc</code> на сервері).</li>
+<li>  <strong>Конвертація PDF</strong>: Через особливості формату PDF (фіксована розмітка), редагувати оригінальний макет сторінки в браузері майже неможливо.</li>
+<li>  <em>Рішення для диплому</em>: Текст імпортується з PDF ➡️ редагується користувачем як HTML ➡️ експортується як новий чистий PDF-документ.</li>
+<li>  <strong>Складність</strong>: <strong>Дуже висока</strong>.</li>
+</ul>
+<h3>4. Оптимізація роботи з великими документами</h3>
+<p>Обробка 100-сторінкових файлів вимагає асинхронної архітектури для запобігання зависання серверу.</p>
+<ul>
+<li>  <strong>Інженерне рішення</strong>:</li>
+<li><strong>Text Chunking</strong>: Розбиття тексту на фрагменти по 4000-8000 символів з перекриттям для збереження контексту.</li>
+<li><strong>Асинхронні черги (Celery + Redis)</strong>: Бекенд створює задачу обробки в черзі й повертає <code>task_id</code>. Обробку виконують окремі Celery-воркери.</li>
+<li><strong>WebSocket-інформування</strong>: Фронтенд підключається до бекенду через вебсокети для отримання прогресу аналізу (наприклад, прогрес-бар: «Оброблено 12 з 40 розділів...»).</li>
+<li>  <strong>Складність</strong>: <strong>Висока</strong>.</li>
+</ul>
+<h3>5. Версіонування та історія змін документів</h3>
+<ul>
+<li>  <strong>Архітектура</strong>: Інтеграція бази даних. Створення таблиць <code>Documents</code> та <code>DocumentVersions</code>.</li>
+<li>  <strong>Збереження різниці (Diffs)</strong>: Для економії місця в БД зберігається не весь текст при кожному збереженні, а лише різниця змін (патчі) за допомогою бібліотеки <code>diff-match-patch</code>.</li>
+<li>  <strong>Інтерфейс порівняння</strong>: Створення візуального вікна порівняння версій, де видалені частини підсвічуються червоним тлом, а додані — зеленим (подібно до інтерфейсу GitHub).</li>
+<li>  <strong>Складність</strong>: <strong>Середня/Висока</strong>.</li>
+</ul>
+<h3>6. Генерація красивих аналітичних звітів</h3>
+<ul>
+<li>  <strong>Звіт</strong>: Формування PDF-файлу, який містить титульну сторінку, оцінки стилю та тональності (у вигляді кругових діаграм), детальну таблицю знайдених та виправлених помилок з поясненням правил, резюме тексту та ключові слова.</li>
+<li>  <strong>Технологія</strong>: <strong>WeasyPrint</strong> (Python). Дозволяє верстати звіт за допомогою звичайного HTML/CSS (включаючи гнучку сітку Flexbox, Grid та стилі друкованих сторінок <code>@page</code>), а потім конвертувати його в ідеальний PDF.</li>
+<li>  <strong>Складність</strong>: <strong>Середня</strong>.</li>
+</ul>
+<h3>7. Додаткові перспективні фічі (На майбутнє)</h3>
+<ul>
+<li>  <strong>Спільна робота (Real-time Collaboration)</strong>: Одночасне редагування документа кількома користувачами. Реалізується через CRDT-алгоритми (бібліотека <strong>Yjs</strong> або <strong>Automerge</strong>) та синхронізацію змін через WebSockets. Це рівень складних комерційних продуктів (Google Docs).</li>
+<li>  <strong>RAG-помічник (Chat with Document)</strong>: Можливість вести діалог із великим завантаженим документом (наприклад, запитати: <em>"Які основні висновки автора у третьому розділі?"</em>). Потребує векторної бази даних (Chroma/FAISS) та впровадження семантичного пошуку.</li>
+</ul>
+<hr/>
+<h2>6. Оптимізація: заміна ШІ на алгоритмічні рішення (Offloading)</h2>
+<p>Для зниження навантаження на API та зменшення фінансових витрат деякі завдання можна перевести на традиційні математичні та лінгвістичні алгоритми.</p>
+<h3>1. Розрахунок мовної складності (CEFR) за допомогою текстових індексів</h3>
+<p>Замість того, щоб просити ШІ оцінити складність тексту, можна написати математичний аналізатор на Python, який розраховує метрики читності:</p>
+<ul>
+<li>  <strong>Індекс читності LIX</strong> (пасує для європейських мов, включаючи українську):</li>
+</ul>
+<p>$$\text{LIX} = \frac{A}{B} + \frac{C \cdot 100}{A}$$</p>
+<p>де $A$ — кількість слів, $B$ — кількість речень, $C$ — кількість довгих слів (більше 6 літер).</p>
+<ul>
+<li>  <strong>Індекс Coleman-Liau</strong> або адаптований <strong>Flesch Reading Ease</strong> для слов'янських мов.</li>
+<li>  На основі отриманого балу система виводить рівень: LIX &lt; 20 (A1), 20-29 (A2), 30-39 (B1), 40-49 (B2), 50-59 (C1), &gt;60 (C2).</li>
+<li>  <em>Результат</em>: Виконується за 1 мілісекунду на вашому CPU, не витрачає токенів і дає 100% стабільний результат.</li>
+</ul>
+<h3>2. Екстракція ключових слів за допомогою алгоритму RAKE / YAKE!</h3>
+<p>Замість генерації ключових слів через ШІ:</p>
+<ul>
+<li>  Використовуємо бібліотеку <code>multi_rake</code> або <code>yake</code> в Python. Алгоритми аналізують частоту появи слів, співвідношення голосних/приголосних, довжину слів та сусідство слів у реченнях, автоматично відсікаючи стоп-слова (прийменники, сполучники).</li>
+<li>  <em>Результат</em>: Миттєве виділення реальних ключових слів безпосередньо з тексту без використання зовнішніх мереж.</li>
+</ul>
+<hr/>
+<h2>7. Розподіл завдань за категоріями та складністю</h2>
+<p>Для ефективного планування розіб'ємо всі ідеї на три етапи:</p>
+<div class="mermaid">gantt
+    title Дорожня карта розробки AI Text Analyzer
+    dateFormat  YYYY-MM-DD
+    section Виробнича практика
+    Виправлення багу кирилиці в PDF    :done,    des1, 2026-06-18, 3d
+    Перехід на OpenRouter              :active,  des2, after des1, 4d
+    Кешування відповідей (AICache DB)  :         des3, after des2, 4d
+    Гостьовий доступ та ліміти в UI    :         des4, after des3, 5d
+    Fallback-система між моделями     :         des5, after des4, 3d
+    section Дипломна робота
+    База даних та реальна JWT Auth     :         des6, 2026-09-01, 10d
+    Інтеграція TipTap Rich-Text Editor  :         des7, after des6, 14d
+    Оптимізація: заміна ШІ на алгоритми:        des8, after des7, 8d
+    Аналіз та перевірка за методичкою  :         des9, after des8, 20d
+    Асинхронна обробка великих файлів  :         des10, after des9, 12d
+    Версіонування та Diff-візуалізатор  :         des11, after des10, 10d
+    Генерація красивих ШІ-звітів (PDF) :         des12, after des11, 7d
+    section На майбутнє
+    Спільна робота (WebSockets/Yjs)    :         des13, 2027-01-01, 20d
+    RAG-чат з документом (ChromaDB)    :         des14, after des13, 15d</div>
+<h3>📋 Матриця пріоритетів та складності</h3>
+<table>
+<thead><tr>
+<th>Назва завдання</th>
+<th>Категорія</th>
+<th>Складність</th>
+<th>Опис інженерного рішення</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong>Виправлення кирилиці в PDF</strong></td>
+<td>Терміново / Практика</td>
+<td><strong>Легка</strong></td>
+<td>Заміна <code>fpdf</code> на <code>fpdf2</code> + завантаження кириличного TTF шрифту.</td>
+</tr>
+<tr>
+<td><strong>Перехід на OpenRouter</strong></td>
+<td>Практика</td>
+<td><strong>Легка</strong></td>
+<td>Перехід на SDK <code>openai</code> та конфігурація OpenRouter API.</td>
+</tr>
+<tr>
+<td><strong>Кешування відповідей (AICache)</strong></td>
+<td>Практика</td>
+<td><strong>Легка/Середня</strong></td>
+<td>Хешування запитів (SHA256) + збереження в БД для уникнення повторних ШІ-запитів.</td>
+</tr>
+<tr>
+<td><strong>Гостьовий доступ та ліміти</strong></td>
+<td>Практика</td>
+<td><strong>Середня</strong></td>
+<td>Додавання обмежень для гостей та візуальних лімітів токенів/запитів в UI.</td>
+</tr>
+<tr>
+<td><strong>Fallback між моделями</strong></td>
+<td>Практика</td>
+<td><strong>Легка</strong></td>
+<td>Спроби запитів по резервному списку моделей.</td>
+</tr>
+<tr>
+<td><strong>Реальна авторизація (JWT + DB)</strong></td>
+<td>Дипломна</td>
+<td><strong>Середня</strong></td>
+<td>Інтеграція <code>FastAPI Users</code> + <code>PostgreSQL/SQLite</code> для безпеки профілів.</td>
+</tr>
+<tr>
+<td><strong>Rich-Text Editor (TipTap)</strong></td>
+<td>Дипломна</td>
+<td><strong>Висока</strong></td>
+<td>Заміна <code>textarea</code> на TipTap + кастомний плагін підсвічування помилок.</td>
+</tr>
+<tr>
+<td><strong>Оптимізація: заміна ШІ</strong></td>
+<td>Дипломна</td>
+<td><strong>Середня</strong></td>
+<td>Розрахунок CEFR через текстові індекси читності, витяг ключів через RAKE.</td>
+</tr>
+<tr>
+<td><strong>Перевірка за методичкою</strong></td>
+<td>Дипломна (Основна фіча)</td>
+<td><strong>Дуже висока</strong></td>
+<td>Парсинг методички ШІ ➡️ Створення JSON-чекліста ➡️ Перевірка документа ➡️ Авто-виправлення в редакторі.</td>
+</tr>
+<tr>
+<td><strong>Обробка великих документів</strong></td>
+<td>Дипломна</td>
+<td><strong>Висока</strong></td>
+<td>Черга завдань <code>Celery</code> + <code>Redis</code> для асинхронного chunk-аналізу великих файлів.</td>
+</tr>
+<tr>
+<td><strong>Історія змін та версії</strong></td>
+<td>Дипломна</td>
+<td><strong>Середня</strong></td>
+<td>Зберігання версій в БД + visual diff через <code>diff-match-patch</code>.</td>
+</tr>
+<tr>
+<td><strong>Генерація аналітичних звітів</strong></td>
+<td>Дипломна</td>
+<td><strong>Середня</strong></td>
+<td>Генерація PDF з графіками помилок та блоками аналітики через <code>WeasyPrint</code>.</td>
+</tr>
+<tr>
+<td><strong>Спільна робота (Multiplayer)</strong></td>
+<td>На майбутнє</td>
+<td><strong>Дуже висока</strong></td>
+<td>Синхронізація документа між користувачами через WebSockets + CRDT алгоритми (Yjs).</td>
+</tr>
+<tr>
+<td><strong>RAG-чат з документом</strong></td>
+<td>На майбутнє</td>
+<td><strong>Висока</strong></td>
+<td>Впровадження векторної БД (Chroma/FAISS) та пошуку контексту для відповідей ШІ.</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2>💡 Поради щодо захисту дипломної роботи</h2>
+<p>Якщо ви реалізуєте вказані фічі, ваш диплом отримає максимальний бал. На захисті варто акцентувати увагу на таких науково-практичних аспектах:</p>
+<ul>
+<li><strong>Наукова новизна порівняння документів</strong>: Опис вашого розробленого методу автоматизованої перевірки академічних робіт на відповідність методичним вказівкам за допомогою LLM-чеклістів.</li>
+<li><strong>Економічна доцільність та оптимізація</strong>: Наведення реальних даних про зниження вартості експлуатації системи завдяки впровадженню бази кешування (<code>AICache</code>) та заміні ШІ класичними алгоритмами (метрика читності LIX замість ШІ для CEFR).</li>
+<li><strong>Оптимізація швидкодії та масштабованість</strong>: Опис вирішення проблеми довгих HTTP-запитів при роботі з великими документами за допомогою асинхронних фонових черг (Celery/Redis) та чанкінгу тексту.</li>
+<li><strong>Комплексність інженерних рішень</strong>: Поєднання сучасних вебтехнологій (React + TipTap), баз даних, черг повідомлень та інтегрованого ШІ в єдину стійку екосистему.</li>
+</ul>
+    </div>
+    
+    <button class="print-btn" onclick="window.print()">
+        🖨️ Зберегти як PDF / Друкувати
+    </button>
+</body>
+</html>
