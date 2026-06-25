@@ -380,6 +380,103 @@
         <h1>Технічний аудит, оптимізація та дорожня карта розвитку проєкту "AI Text Analyzer"</h1>
 <p>Цей документ містить максимально детальний аналіз архітектури, кодової бази та інтерфейсу проєкту <strong>AI Text Analyzer</strong>. Тут об'єднано результати первинного аудиту, огляд ШІ/не-ШІ функцій, опис критичних «вузьких місць», детальний опис кожної ідеї для виробничої практики та дипломної роботи (зокрема, фічі порівняння з методичкою), а також рекомендації щодо оптимізації та захисту роботи.</p>
 <hr/>
+<h2>📋 Матриця пріоритетів та складності</h2>
+<table>
+<thead><tr>
+<th>Назва завдання</th>
+<th>Категорія</th>
+<th>Складність</th>
+<th>Опис інженерного рішення</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong>Виправлення кирилиці в PDF</strong></td>
+<td>Терміново / Практика</td>
+<td><strong>Легка</strong></td>
+<td>Заміна <code>fpdf</code> на <code>fpdf2</code> + завантаження кириличного TTF шрифту.</td>
+</tr>
+<tr>
+<td><strong>Перехід на OpenRouter</strong></td>
+<td>Практика</td>
+<td><strong>Легка</strong></td>
+<td>Перехід на SDK <code>openai</code> та конфігурація OpenRouter API.</td>
+</tr>
+<tr>
+<td><strong>Кешування відповідей (AICache)</strong></td>
+<td>Практика</td>
+<td><strong>Легка/Середня</strong></td>
+<td>Хешування запитів (SHA256) + збереження в БД для уникнення повторних ШІ-запитів.</td>
+</tr>
+<tr>
+<td><strong>Гостьовий доступ та ліміти</strong></td>
+<td>Практика</td>
+<td><strong>Середня</strong></td>
+<td>Додавання обмежень для гостей та візуальних лімітів токенів/запитів в UI.</td>
+</tr>
+<tr>
+<td><strong>Fallback між моделями</strong></td>
+<td>Практика</td>
+<td><strong>Легка</strong></td>
+<td>Спроби запитів по резервному списку моделей.</td>
+</tr>
+<tr>
+<td><strong>Реальна авторизація (JWT + DB)</strong></td>
+<td>Дипломна</td>
+<td><strong>Середня</strong></td>
+<td>Інтеграція <code>FastAPI Users</code> + <code>PostgreSQL/SQLite</code> для безпеки профілів.</td>
+</tr>
+<tr>
+<td><strong>Rich-Text Editor (TipTap)</strong></td>
+<td>Дипломна</td>
+<td><strong>Висока</strong></td>
+<td>Заміна <code>textarea</code> на TipTap + кастомний плагін підсвічування помилок.</td>
+</tr>
+<tr>
+<td><strong>Оптимізація: заміна ШІ</strong></td>
+<td>Дипломна</td>
+<td><strong>Середня</strong></td>
+<td>Розрахунок CEFR через текстові індекси читності, витяг ключів через RAKE.</td>
+</tr>
+<tr>
+<td><strong>Перевірка за методичкою</strong></td>
+<td>Дипломна (Основна фіча)</td>
+<td><strong>Дуже висока</strong></td>
+<td>Парсинг методички ШІ ➡️ Створення JSON-чекліста ➡️ Перевірка документа ➡️ Авто-виправлення в редакторі.</td>
+</tr>
+<tr>
+<td><strong>Обробка великих документів</strong></td>
+<td>Дипломна</td>
+<td><strong>Висока</strong></td>
+<td>Черга завдань <code>Celery</code> + <code>Redis</code> для асинхронного chunk-аналізу великих файлів.</td>
+</tr>
+<tr>
+<td><strong>Історія змін та версії</strong></td>
+<td>Дипломна</td>
+<td><strong>Середня</strong></td>
+<td>Зберігання версій в БД + visual diff через <code>diff-match-patch</code>.</td>
+</tr>
+<tr>
+<td><strong>Генерація аналітичних звітів</strong></td>
+<td>Дипломна</td>
+<td><strong>Середня</strong></td>
+<td>Генерація PDF з графіками помилок та блоками аналітики через <code>WeasyPrint</code>.</td>
+</tr>
+<tr>
+<td><strong>Спільна робота (Multiplayer)</strong></td>
+<td>На майбутнє</td>
+<td><strong>Дуже висока</strong></td>
+<td>Синхронізація документа між користувачами через WebSockets + CRDT алгоритми (Yjs).</td>
+</tr>
+<tr>
+<td><strong>RAG-чат з документом</strong></td>
+<td>На майбутнє</td>
+<td><strong>Висока</strong></td>
+<td>Впровадження векторної БД (Chroma/FAISS) та пошуку контексту для відповідей ШІ.</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+
 <h2>1. Повний аудит проєкту</h2>
 <h3>📊 Архітектура та структура проєкту</h3>
 <p>Проєкт побудовано за архітектурним патерном розділення клієнта та сервера (Client-Server Split):</p>
@@ -580,7 +677,7 @@
 <ul>
 <li>  <strong>Індекс читності LIX</strong> (пасує для європейських мов, включаючи українську):</li>
 </ul>
-<p>$$\text{LIX} = \frac{A}{B} + \frac{C \cdot 100}{A}$$</p>
+<p>$$	ext{LIX} = rac{A}{B} + rac{C \cdot 100}{A}$$</p>
 <p>де $A$ — кількість слів, $B$ — кількість речень, $C$ — кількість довгих слів (більше 6 літер).</p>
 <ul>
 <li>  <strong>Індекс Coleman-Liau</strong> або адаптований <strong>Flesch Reading Ease</strong> для слов'янських мов.</li>
@@ -594,123 +691,7 @@
 <li>  <em>Результат</em>: Миттєве виділення реальних ключових слів безпосередньо з тексту без використання зовнішніх мереж.</li>
 </ul>
 <hr/>
-<h2>7. Розподіл завдань за категоріями та складністю</h2>
-<p>Для ефективного планування розіб'ємо всі ідеї на три етапи:</p>
-<div class="mermaid">gantt
-    title Дорожня карта розробки AI Text Analyzer
-    dateFormat  YYYY-MM-DD
-    section Виробнича практика
-    Виправлення багу кирилиці в PDF    :done,    des1, 2026-06-18, 3d
-    Перехід на OpenRouter              :active,  des2, after des1, 4d
-    Кешування відповідей (AICache DB)  :         des3, after des2, 4d
-    Гостьовий доступ та ліміти в UI    :         des4, after des3, 5d
-    Fallback-система між моделями     :         des5, after des4, 3d
-    section Дипломна робота
-    База даних та реальна JWT Auth     :         des6, 2026-09-01, 10d
-    Інтеграція TipTap Rich-Text Editor  :         des7, after des6, 14d
-    Оптимізація: заміна ШІ на алгоритми:        des8, after des7, 8d
-    Аналіз та перевірка за методичкою  :         des9, after des8, 20d
-    Асинхронна обробка великих файлів  :         des10, after des9, 12d
-    Версіонування та Diff-візуалізатор  :         des11, after des10, 10d
-    Генерація красивих ШІ-звітів (PDF) :         des12, after des11, 7d
-    section На майбутнє
-    Спільна робота (WebSockets/Yjs)    :         des13, 2027-01-01, 20d
-    RAG-чат з документом (ChromaDB)    :         des14, after des13, 15d</div>
-<h3>📋 Матриця пріоритетів та складності</h3>
-<table>
-<thead><tr>
-<th>Назва завдання</th>
-<th>Категорія</th>
-<th>Складність</th>
-<th>Опис інженерного рішення</th>
-</tr></thead>
-<tbody>
-<tr>
-<td><strong>Виправлення кирилиці в PDF</strong></td>
-<td>Терміново / Практика</td>
-<td><strong>Легка</strong></td>
-<td>Заміна <code>fpdf</code> на <code>fpdf2</code> + завантаження кириличного TTF шрифту.</td>
-</tr>
-<tr>
-<td><strong>Перехід на OpenRouter</strong></td>
-<td>Практика</td>
-<td><strong>Легка</strong></td>
-<td>Перехід на SDK <code>openai</code> та конфігурація OpenRouter API.</td>
-</tr>
-<tr>
-<td><strong>Кешування відповідей (AICache)</strong></td>
-<td>Практика</td>
-<td><strong>Легка/Середня</strong></td>
-<td>Хешування запитів (SHA256) + збереження в БД для уникнення повторних ШІ-запитів.</td>
-</tr>
-<tr>
-<td><strong>Гостьовий доступ та ліміти</strong></td>
-<td>Практика</td>
-<td><strong>Середня</strong></td>
-<td>Додавання обмежень для гостей та візуальних лімітів токенів/запитів в UI.</td>
-</tr>
-<tr>
-<td><strong>Fallback між моделями</strong></td>
-<td>Практика</td>
-<td><strong>Легка</strong></td>
-<td>Спроби запитів по резервному списку моделей.</td>
-</tr>
-<tr>
-<td><strong>Реальна авторизація (JWT + DB)</strong></td>
-<td>Дипломна</td>
-<td><strong>Середня</strong></td>
-<td>Інтеграція <code>FastAPI Users</code> + <code>PostgreSQL/SQLite</code> для безпеки профілів.</td>
-</tr>
-<tr>
-<td><strong>Rich-Text Editor (TipTap)</strong></td>
-<td>Дипломна</td>
-<td><strong>Висока</strong></td>
-<td>Заміна <code>textarea</code> на TipTap + кастомний плагін підсвічування помилок.</td>
-</tr>
-<tr>
-<td><strong>Оптимізація: заміна ШІ</strong></td>
-<td>Дипломна</td>
-<td><strong>Середня</strong></td>
-<td>Розрахунок CEFR через текстові індекси читності, витяг ключів через RAKE.</td>
-</tr>
-<tr>
-<td><strong>Перевірка за методичкою</strong></td>
-<td>Дипломна (Основна фіча)</td>
-<td><strong>Дуже висока</strong></td>
-<td>Парсинг методички ШІ ➡️ Створення JSON-чекліста ➡️ Перевірка документа ➡️ Авто-виправлення в редакторі.</td>
-</tr>
-<tr>
-<td><strong>Обробка великих документів</strong></td>
-<td>Дипломна</td>
-<td><strong>Висока</strong></td>
-<td>Черга завдань <code>Celery</code> + <code>Redis</code> для асинхронного chunk-аналізу великих файлів.</td>
-</tr>
-<tr>
-<td><strong>Історія змін та версії</strong></td>
-<td>Дипломна</td>
-<td><strong>Середня</strong></td>
-<td>Зберігання версій в БД + visual diff через <code>diff-match-patch</code>.</td>
-</tr>
-<tr>
-<td><strong>Генерація аналітичних звітів</strong></td>
-<td>Дипломна</td>
-<td><strong>Середня</strong></td>
-<td>Генерація PDF з графіками помилок та блоками аналітики через <code>WeasyPrint</code>.</td>
-</tr>
-<tr>
-<td><strong>Спільна робота (Multiplayer)</strong></td>
-<td>На майбутнє</td>
-<td><strong>Дуже висока</strong></td>
-<td>Синхронізація документа між користувачами через WebSockets + CRDT алгоритми (Yjs).</td>
-</tr>
-<tr>
-<td><strong>RAG-чат з документом</strong></td>
-<td>На майбутнє</td>
-<td><strong>Висока</strong></td>
-<td>Впровадження векторної БД (Chroma/FAISS) та пошуку контексту для відповідей ШІ.</td>
-</tr>
-</tbody>
-</table>
+
 <hr/>
 <h2>💡 Поради щодо захисту дипломної роботи</h2>
 <p>Якщо ви реалізуєте вказані фічі, ваш диплом отримає максимальний бал. На захисті варто акцентувати увагу на таких науково-практичних аспектах:</p>
